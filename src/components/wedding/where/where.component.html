@@ -1,0 +1,18 @@
+<!-- MAP -->
+<section id="where" class="py-20 md:py-32">
+  <div class="max-w-4xl mx-auto px-6">
+    <div appAnimateOnScroll class="section-to-animate text-center">
+      <h2 class="font-serif text-5xl text-[#8d7a6e] mb-6">Come Arrivare</h2>
+      
+      <div class="mb-8">
+        <p class="font-serif text-3xl text-[#5d5d5d]">Colcaprile</p>
+        <p class="font-sans text-lg text-gray-500 mt-2">Strada Comunale Santa Croce, Assisi (PG)</p>
+      </div>
+
+      <div class="aspect-video w-full overflow-hidden rounded-md shadow-lg border-4 border-white">
+        <iframe [src]="mapUrl()" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+      <a [href]="mapDirectionsUrl()" target="_blank" class="inline-block mt-8 bg-[#969e7f] text-white font-sans tracking-widest uppercase px-8 py-3 rounded-md hover:bg-[#838a6c] transition-colors duration-300">Apri Indicazioni</a>
+    </div>
+  </div>
+</section>

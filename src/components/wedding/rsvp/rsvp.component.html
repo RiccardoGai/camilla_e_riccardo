@@ -1,0 +1,112 @@
+<!-- RSVP & GIFT -->
+<section id="rsvp" appAnimateOnScroll class="section-to-animate py-20 md:py-32 text-gray-100">
+  <!-- RSVP PART -->
+  <div class="max-w-2xl mx-auto px-6">
+    <h2 class="font-serif text-5xl text-white mb-8 text-center">RSVP</h2>
+    @if (submissionState() === 'idle') {
+      <form [formGroup]="rsvpForm" (ngSubmit)="onRsvpSubmit()" class="font-sans space-y-6">
+        <div formArrayName="guests">
+          <label class="block text-lg text-gray-200 mb-2">Nome e cognome</label>
+          @for (guest of guests.controls; track $index) {
+            <div [formGroupName]="$index" class="border-b border-white/10 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-2">
+              <div class="flex items-center gap-2">
+                <input formControlName="name" type="text" placeholder="Mario Rossi" class="flex-grow w-full bg-transparent border-b border-white/40 focus:border-white outline-none py-2 transition-colors placeholder:italic placeholder:text-gray-300">
+                <button type="button" (click)="removeGuest($index)" [class.invisible]="guests.length <= 1" class="text-gray-200 hover:text-red-400 transition-colors p-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-4 pl-1 pt-3">
+                 <label class="flex items-center gap-3 text-sm text-gray-300 cursor-pointer group select-none">
+                    <!-- Custom Checkbox Wrapper -->
+                    <div class="relative flex items-center justify-center w-5 h-5">
+                      <input type="checkbox" formControlName="isChild" (change)="toggleChildAge($index)"
+                             class="peer appearance-none w-5 h-5 border border-white/40 rounded bg-white/10 checked:bg-[#f1ebe5] checked:border-[#f1ebe5] transition-all duration-200 cursor-pointer focus:outline-none">
+                      <!-- Checkmark Icon (Hidden by default, shown when peer is checked) -->
+                      <svg class="absolute w-3.5 h-3.5 text-[#5d5d5d] opacity-0 peer-checked:opacity-100 transition-opacity duration-200 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <span class="group-hover:text-white transition-colors">Bambino/a</span>
+                 </label>
+
+                 @if (guest.get('isChild')?.value) {
+                    <div class="flex items-center gap-2 animate-[fadeIn_0.3s_ease-out]">
+                        <label for="age-{{$index}}" class="text-sm text-gray-300">Età:</label>
+                        <input id="age-{{$index}}" formControlName="age" type="number" min="0" max="17" class="w-16 bg-transparent border-b border-white/40 focus:border-white outline-none py-1 text-center transition-colors placeholder:text-gray-400" placeholder="_ _">
+                    </div>
+                 }
+              </div>
+            </div>
+          }
+          <button type="button" (click)="addGuest()" class="mt-2 text-gray-200 hover:text-white transition-colors flex items-center gap-1 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Aggiungi persona
+          </button>
+        </div>
+        <div>
+          <label for="notes" class="block text-lg text-gray-200 mb-2">Note per gli sposi</label>
+          <textarea formControlName="notes" id="notes" rows="1" placeholder="Es. intolleranze, allergie, necessità di seggiolone..." class="w-full bg-transparent border-b border-white/40 focus:border-white outline-none py-2 transition-colors placeholder:italic placeholder:text-gray-300"></textarea>
+        </div>
+        <div class="text-center pt-6">
+          <button type="submit" [disabled]="rsvpForm.invalid" class="bg-[#f1ebe5] text-[#5d5d5d] font-sans tracking-widest uppercase px-12 py-3 rounded-md hover:bg-white/90 transition-all duration-300 disabled:bg-[#f1ebe5]/50 disabled:text-[#5d5d5d]/70 disabled:cursor-not-allowed">
+            Invia Conferma
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="text-center py-10 transition-opacity duration-500">
+        @if(submissionState() === 'loading') {
+          <div class="flex justify-center items-center flex-col">
+            <svg class="animate-spin h-10 w-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-4 font-sans text-lg text-gray-200">Invio in corso...</p>
+          </div>
+        } @else if (submissionState() === 'success') {
+          <div class="flex justify-center items-center flex-col">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <h3 class="font-serif text-3xl text-white mt-4">Grazie!</h3>
+            <p class="mt-2 font-sans text-lg italic text-gray-200">La tua conferma è stata inviata.</p>
+            <p class="mt-2 font-sans text-lg italic text-gray-200">Non vediamo l'ora di festeggiare con te!</p>
+
+          </div>
+        } @else if (submissionState() === 'error') {
+          <p>Si è verificato un errore. Riprova.</p>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- SEPARATOR -->
+  <div class="max-w-xl mx-auto px-6">
+    <hr class="my-16 md:my-24 border-white/20">
+  </div>
+
+  <!-- GIFT LIST PART -->
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="font-serif text-5xl text-white mb-8">Lista Nozze</h2>
+    <p class="font-sans text-lg leading-relaxed mb-8 italic text-gray-200">La vostra presenza sarà per noi il regalo più grande. Ma se desiderate contribuire a realizzare i nostri sogni, potete farlo con un pensiero per il nostro viaggio di nozze.</p>
+    <div class="font-sans text-lg bg-white/20 border border-white/30 inline-block px-8 py-4 rounded-md text-white">
+      <p class="tracking-widest text-gray-200">IBAN</p>
+      <div class="flex items-center gap-4 mt-1">
+        <p class="select-all">{{ iban }}</p>
+        <button (click)="copyIban()" title="Copia IBAN" class="text-white/80 hover:text-white transition-colors p-1">
+          @if (copyState() === 'copied') {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-green-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+            </svg>
+          }
+        </button>
+      </div>
+      <p class="text-sm mt-2 text-gray-200">Intestato a: Camilla & Riccardo</p>
+    </div>
+    <p class="font-serif text-3xl text-white mt-12 italic">Grazie di cuore!</p>
+  </div>
+</section>
