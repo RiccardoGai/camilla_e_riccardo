@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeCopy01, hugeTick01 } from '@ng-icons/huge-icons';
+import { firstValueFrom } from 'rxjs';
 import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.directive';
 
 @Component({
@@ -33,6 +35,7 @@ import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.
 })
 export class RsvpComponent {
   private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
 
   rsvpForm = this.fb.group({
     guests: this.fb.array([this.createGuestGroup()], Validators.required),
@@ -85,18 +88,26 @@ export class RsvpComponent {
 
     this.submissionState.set('loading');
 
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const payload = {
+      guests: this.guests.getRawValue().map((guest) => ({
+        name: guest.name ?? '',
+        isChild: guest.isChild ?? false,
+        age: guest.age ?? '',
+      })),
+      notes: this.rsvpForm.get('notes')?.value ?? '',
+    };
 
-    // For this demo, we'll assume success
-    console.log('RSVP Submitted:', this.rsvpForm.value);
-    this.submissionState.set('success');
-    this.rsvpForm.reset();
-    this.guests.clear();
-    this.addGuest(); // Add one back for the next submission
-
-    // Reset state after a few seconds
-    //setTimeout(() => this.submissionState.set('idle'), 5000);
+    try {
+      await firstValueFrom(this.http.post('/api/rsvp', payload));
+      this.submissionState.set('success');
+      this.rsvpForm.reset();
+      this.guests.clear();
+      this.addGuest(); // Add one back for the next submission
+    } catch (error) {
+      console.error('RSVP submission failed', error);
+      this.submissionState.set('error');
+      setTimeout(() => this.submissionState.set('idle'), 4000);
+    }
   }
 
   // --- Gift List Logic ---

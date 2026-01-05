@@ -6,6 +6,7 @@ import {
 } from '@angular/ssr/node';
 import * as dotenv from 'dotenv';
 import express from 'express';
+import { google } from 'googleapis';
 import crypto from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,7 +23,7 @@ const angularApp = new AngularNodeAppEngine();
 app.use(express.json());
 
 const LOGIN_SECRET = process.env['LOGIN_SECRET'] || 'default_secret';
-const AUTH_COOKIE_NAME = 'wedding_auth';
+const AUTH_COOKIE_NAME = 'auth_token';
 
 const createAuthToken = (password: string) =>
   crypto.createHmac('sha256', LOGIN_SECRET).update(password).digest('hex');
@@ -81,6 +82,79 @@ app.get('/api/session', (req, res) => {
   }
 
   return res.status(401).json({ authenticated: false });
+});
+
+type GuestPayload = { name: string; isChild?: boolean; age?: string | number };
+
+const getSheetsClient = async () => {
+  const clientEmail = process.env['GOOGLE_SHEETS_CLIENT_EMAIL'];
+  const privateKey = process.env['GOOGLE_SHEETS_PRIVATE_KEY']?.replace(/\\n/g, '\n');
+
+  if (!clientEmail || !privateKey) {
+    throw new Error('Google Sheets credentials are missing.');
+  }
+
+  return new google.auth.JWT({
+    email: clientEmail,
+    key: privateKey,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+};
+
+const appendToSheet = async (guests: GuestPayload[], notes: string) => {
+  const spreadsheetId = process.env['GOOGLE_SHEETS_SPREADSHEET_ID'];
+  const sheetName = process.env['GOOGLE_SHEETS_SHEET_NAME'] || '';
+
+  if (!spreadsheetId) {
+    throw new Error('GOOGLE_SHEETS_SPREADSHEET_ID is not configured.');
+  }
+
+  const auth = await getSheetsClient();
+  const sheets = google.sheets({ version: 'v4', auth });
+  const timestamp = new Date().toISOString();
+  const rows = guests.map((guest) => [
+    timestamp,
+    guest.name.trim(),
+    guest.isChild ? 'Yes' : 'No',
+    guest.age ?? '',
+    notes ?? '',
+  ]);
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range: `${sheetName}!A:E`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: rows },
+  });
+};
+
+app.post('/api/rsvp', async (req, res) => {
+  try {
+    const { guests, notes } = req.body ?? {};
+
+    if (!Array.isArray(guests) || guests.length === 0) {
+      return res.status(400).json({ success: false, message: 'Nessun ospite fornito.' });
+    }
+
+    const normalizedGuests = guests
+      .map((guest: GuestPayload) => ({
+        name: typeof guest.name === 'string' ? guest.name : '',
+        isChild: Boolean(guest.isChild),
+        age: guest.age ?? '',
+      }))
+      .filter((guest) => guest.name.trim().length > 0);
+
+    if (normalizedGuests.length === 0) {
+      return res.status(400).json({ success: false, message: 'Nome ospite mancante.' });
+    }
+
+    await appendToSheet(normalizedGuests, typeof notes === 'string' ? notes : '');
+
+    return res.status(200).json({ success: true, rowsAppended: normalizedGuests.length });
+  } catch (error) {
+    console.error('Errore durante la scrittura su Google Sheets:', error);
+    return res.status(500).json({ success: false, message: 'Errore nel salvataggio RSVP.' });
+  }
 });
 /**
  * Serve static files from /browser
