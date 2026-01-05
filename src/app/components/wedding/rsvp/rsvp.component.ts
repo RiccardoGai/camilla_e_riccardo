@@ -39,7 +39,6 @@ export class RsvpComponent {
 
   rsvpForm = this.fb.group({
     guests: this.fb.array([this.createGuestGroup()], Validators.required),
-    notes: [''],
   });
 
   submissionState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -53,6 +52,7 @@ export class RsvpComponent {
       name: ['', Validators.required],
       isChild: [false],
       age: [''],
+      note: [''],
     });
   }
 
@@ -93,8 +93,8 @@ export class RsvpComponent {
         name: guest.name ?? '',
         isChild: guest.isChild ?? false,
         age: guest.age ?? '',
+        note: guest.note ?? '',
       })),
-      notes: this.rsvpForm.get('notes')?.value ?? '',
     };
 
     try {

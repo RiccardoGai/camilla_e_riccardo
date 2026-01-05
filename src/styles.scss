@@ -1,9 +1,12 @@
 @use 'tailwindcss';
 
 @theme {
+  --color-beige-light: #f1ebe5;
   --color-beige: #8d7a6e;
   --color-green: #828a6c;
   --color-green-light: #969e7f;
+  --color-green-dark: #838a6c;
+  --color-gray: #5d5d5d;
 }
 
 @font-face {
@@ -154,13 +157,15 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  background-color: #f1ebe5; /* Beige */
-  color: #5d5d5d;
-  font-family: 'Editors Note', serif;
+  @apply bg-beige-light text-gray;
+  font-family: 'Editors Note', sans-serif;
 }
 .font-adore {
-  font-family: 'Adore';
+  font-family: 'Adore', sans-serif;
 }
 .font-cursive {
   font-family: 'Grand Amoura', cursive;
+}
+.font-editors-note {
+  font-family: 'Editors Note', serif;
 }

@@ -1,9 +1,9 @@
-<main class="flex h-screen w-full items-center justify-center bg-[#f1ebe5] p-4">
+<main class="bg-beige-light flex h-screen w-full items-center justify-center p-4">
   <div
-    class="mx-auto w-full max-w-md animate-[fadeIn_1.5s_ease-in-out] rounded-xl bg-white/50 p-8 text-center text-[#5d5d5d] shadow-2xl backdrop-blur-lg md:p-12"
+    class="text-gray mx-auto w-full max-w-md animate-[fadeIn_1.5s_ease-in-out] rounded-xl bg-white/50 p-8 text-center shadow-2xl backdrop-blur-lg md:p-12"
   >
     <div class="mb-5 flex items-center justify-center">
-      <img [src]="logoUrl" alt="Logo C&R" class="h-20 w-auto" />
+      <app-logo class="text-beige" size="7rem" ariaLabel="Logo Camilla e Riccardo"></app-logo>
     </div>
 
     <div class="mb-10">
@@ -17,14 +17,12 @@
 
         <span class="uppercase">Riccardo</span>
       </h1>
-      <p class="mt-2 text-xl tracking-widest text-gray-500">20 | 06 | 2026</p>
+      <p class="mt-2 text-xl tracking-widest">20 | 06 | 2026</p>
     </div>
 
     <div>
       <h2 class="text-beige mb-3 text-3xl">Benvenuti</h2>
-      <p class="mb-8 text-gray-600">
-        Per accedere al sito, inserisci la password che hai ricevuto con l'invito.
-      </p>
+      <p class="mb-8">Per accedere al sito, inserisci la password che hai ricevuto con l'invito.</p>
       <form (submit)="onSubmit($event)">
         <div class="relative w-full">
           <input
@@ -88,7 +86,7 @@
         }
         <button
           type="submit"
-          class="bg-green-light mt-8 w-full rounded-md py-3 tracking-widest text-white uppercase shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#838a6c] hover:shadow-xl"
+          class="bg-green-light hover:bg-green-dark mt-8 w-full rounded-md py-3 tracking-widest text-white uppercase shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
         >
           Entra
         </button>

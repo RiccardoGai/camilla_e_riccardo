@@ -4,8 +4,8 @@
       <div class="flex h-16 items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center">
-          <a href="#home" class="flex-shrink-0" (click)="scrollTo($event, '#home')">
-            <img [src]="logoUrl" alt="Logo C&R" class="h-10 w-auto" />
+          <a href="#home" class="flex flex-shrink-0" (click)="scrollTo($event, '#home')">
+            <app-logo class="text-gray" size="2.5rem" ariaLabel="Logo Camilla e Riccardo"></app-logo>
           </a>
         </div>
 
@@ -16,7 +16,7 @@
               <a
                 [href]="link.href"
                 (click)="scrollTo($event, link.href)"
-                class="hover:text-beige rounded-full px-3 py-2 text-sm font-medium tracking-wider whitespace-nowrap text-[#5d5d5d] uppercase transition-colors duration-300 hover:bg-[#f1ebe5]/50"
+                class="hover:text-beige hover:bg-beige-light/50 text-gray rounded-full px-3 py-2 text-sm font-medium tracking-wider whitespace-nowrap uppercase transition-colors duration-300"
                 >{{ link.label }}</a
               >
             }
@@ -28,7 +28,7 @@
           <button
             (click)="toggleMenu()"
             type="button"
-            class="hover:text-beige p-2 text-[#5d5d5d] focus:outline-none"
+            class="hover:text-beige text-gray p-2 focus:outline-none"
             aria-controls="mobile-menu"
             [attr.aria-expanded]="isMobileMenuOpen()"
           >
@@ -87,7 +87,7 @@
           <a
             [href]="link.href"
             (click)="scrollTo($event, link.href)"
-            class="hover:text-beige block w-full rounded-md px-3 py-3 text-center text-base font-medium tracking-widest text-[#5d5d5d] uppercase transition-colors hover:bg-[#f1ebe5]"
+            class="hover:text-beige hover:bg-beige-light text-gray block w-full rounded-md px-3 py-3 text-center text-base font-medium tracking-widest uppercase transition-colors"
             >{{ link.label }}</a
           >
         }

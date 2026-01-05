@@ -10,6 +10,7 @@ import { google } from 'googleapis';
 import crypto from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Resend } from 'resend';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -64,27 +65,26 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.get('/api/session', (req, res) => {
-  const cookies = parseCookies(req.headers.cookie);
-  const token = cookies[AUTH_COOKIE_NAME];
-  const expectedPassword = process.env['LOGIN_PASSWORD'];
-
-  if (!expectedPassword) {
-    return res.status(500).json({ authenticated: false, message: 'Login non configurato.' });
-  }
-
-  if (!token) {
-    return res.status(401).json({ authenticated: false });
-  }
-
-  const expectedToken = createAuthToken(expectedPassword);
-  if (token === expectedToken) {
+  if (isAuthenticated(req)) {
     return res.json({ authenticated: true });
   }
 
   return res.status(401).json({ authenticated: false });
 });
 
-type GuestPayload = { name: string; isChild?: boolean; age?: string | number };
+const isAuthenticated = (req: express.Request): boolean => {
+  const expectedPassword = process.env['LOGIN_PASSWORD'];
+  if (!expectedPassword) return false;
+
+  const cookies = parseCookies(req.headers.cookie);
+  const token = cookies[AUTH_COOKIE_NAME];
+  if (!token) return false;
+
+  const expectedToken = createAuthToken(expectedPassword);
+  return token === expectedToken;
+};
+
+type GuestPayload = { name: string; isChild?: boolean; age?: string | number; note?: string };
 
 const getSheetsClient = async () => {
   const clientEmail = process.env['GOOGLE_SHEETS_CLIENT_EMAIL'];
@@ -101,7 +101,7 @@ const getSheetsClient = async () => {
   });
 };
 
-const appendToSheet = async (guests: GuestPayload[], notes: string) => {
+const appendToSheet = async (guests: GuestPayload[]) => {
   const spreadsheetId = process.env['GOOGLE_SHEETS_SPREADSHEET_ID'];
   const sheetName = process.env['GOOGLE_SHEETS_SHEET_NAME'] || '';
 
@@ -115,9 +115,9 @@ const appendToSheet = async (guests: GuestPayload[], notes: string) => {
   const rows = guests.map((guest) => [
     timestamp,
     guest.name.trim(),
-    guest.isChild ? 'Yes' : 'No',
+    guest.isChild ? 'Sì' : 'No',
     guest.age ?? '',
-    notes ?? '',
+    guest.note ?? '',
   ]);
 
   await sheets.spreadsheets.values.append({
@@ -130,7 +130,11 @@ const appendToSheet = async (guests: GuestPayload[], notes: string) => {
 
 app.post('/api/rsvp', async (req, res) => {
   try {
-    const { guests, notes } = req.body ?? {};
+    if (!isAuthenticated(req)) {
+      return res.status(401).json({ success: false, message: 'Non autorizzato.' });
+    }
+
+    const { guests, notes: sharedNotes } = req.body ?? {};
 
     if (!Array.isArray(guests) || guests.length === 0) {
       return res.status(400).json({ success: false, message: 'Nessun ospite fornito.' });
@@ -141,6 +145,8 @@ app.post('/api/rsvp', async (req, res) => {
         name: typeof guest.name === 'string' ? guest.name : '',
         isChild: Boolean(guest.isChild),
         age: guest.age ?? '',
+        note:
+          typeof guest.note === 'string' ? guest.note : typeof sharedNotes === 'string' ? sharedNotes : '',
       }))
       .filter((guest) => guest.name.trim().length > 0);
 
@@ -148,7 +154,33 @@ app.post('/api/rsvp', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Nome ospite mancante.' });
     }
 
-    await appendToSheet(normalizedGuests, typeof notes === 'string' ? notes : '');
+    await appendToSheet(normalizedGuests);
+
+    const resend = new Resend(process.env['RESEND_API_KEY']);
+    console.log(process.env['RESEND_API_KEY']);
+    try {
+      await resend.emails.send({
+        from: 'camillaericcardo@resend.dev',
+        to: ['riccardo.gai91@gmail.com'],
+        subject: 'RSVP Ricevuto',
+        html: `<h1>Nuovo RSVP Ricevuto</h1>
+      <p>Sono stati ricevuti ${normalizedGuests.length} nuovi RSVP:</p>
+      <ul>
+        ${normalizedGuests
+          .map(
+            (guest) => `<li>
+          <strong>Nome:</strong> ${guest.name} <br/>
+          <strong>Bambino:</strong> ${guest.isChild ? 'Sì' : 'No'} <br/>
+          <strong>Età:</strong> ${guest.age} <br/>
+          <strong>Note:</strong> ${guest.note}
+        </li>`
+          )
+          .join('')}
+      </ul>`,
+      });
+    } catch (emailError) {
+      console.error("Errore durante l'invio dell'email di notifica:", emailError);
+    }
 
     return res.status(200).json({ success: true, rowsAppended: normalizedGuests.length });
   } catch (error) {

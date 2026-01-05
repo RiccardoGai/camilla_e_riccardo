@@ -4,7 +4,7 @@
   <div class="mx-auto max-w-2xl px-6">
     <h2 class="font-adore mb-8 text-center text-5xl text-white">RSVP</h2>
     @if (submissionState() === 'idle') {
-      <form [formGroup]="rsvpForm" (ngSubmit)="onRsvpSubmit()" class="space-y-6 font-sans">
+      <form [formGroup]="rsvpForm" (ngSubmit)="onRsvpSubmit()" class="space-y-6">
         <div formArrayName="guests">
           <label class="mb-2 block text-lg text-gray-200">Nome e cognome</label>
           @for (guest of guests.controls; track $index) {
@@ -45,11 +45,11 @@
                       type="checkbox"
                       formControlName="isChild"
                       (change)="toggleChildAge($index)"
-                      class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-white/40 bg-white/10 transition-all duration-200 checked:border-[#f1ebe5] checked:bg-[#f1ebe5] focus:outline-none"
+                      class="peer checked:border-beige-light checked:bg-beige-light h-5 w-5 cursor-pointer appearance-none rounded border border-white/40 bg-white/10 transition-all duration-200 focus:outline-none"
                     />
                     <!-- Checkmark Icon (Hidden by default, shown when peer is checked) -->
                     <svg
-                      class="pointer-events-none absolute h-3.5 w-3.5 text-[#5d5d5d] opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+                      class="text-gray pointer-events-none absolute h-3.5 w-3.5 opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="none"
@@ -79,6 +79,18 @@
                   </div>
                 }
               </div>
+              <div class="mt-3">
+                <label for="note-{{ $index }}" class="mb-1 block text-sm text-gray-300"
+                  >Note per gli sposi</label
+                >
+                <textarea
+                  id="note-{{ $index }}"
+                  formControlName="note"
+                  rows="1"
+                  placeholder="Es. intolleranze, allergie, necessità di seggiolone..."
+                  class="w-full border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
+                ></textarea>
+              </div>
             </div>
           }
           <button
@@ -99,21 +111,11 @@
             Aggiungi persona
           </button>
         </div>
-        <div>
-          <label for="notes" class="mb-2 block text-lg text-gray-200">Note per gli sposi</label>
-          <textarea
-            formControlName="notes"
-            id="notes"
-            rows="1"
-            placeholder="Es. intolleranze, allergie, necessità di seggiolone..."
-            class="w-full border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
-          ></textarea>
-        </div>
         <div class="pt-6 text-center">
           <button
             type="submit"
             [disabled]="rsvpForm.invalid"
-            class="rounded-md bg-[#f1ebe5] px-12 py-3 tracking-widest text-[#5d5d5d] uppercase transition-all duration-300 hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-[#f1ebe5]/50 disabled:text-[#5d5d5d]/70"
+            class="bg-beige-light disabled:bg-beige-light/50 text-gray disabled:text-gray/70 rounded-md px-12 py-3 tracking-widest uppercase transition-all duration-300 hover:bg-white/90 disabled:cursor-not-allowed"
           >
             Invia Conferma
           </button>
@@ -173,10 +175,10 @@
   </div>
   <!-- GIFT LIST PART -->
   <div class="mx-auto mt-16 max-w-3xl px-6 text-center">
-    <h2 class="mb-8 text-5xl text-white">Lista Nozze</h2>
-    <p class="mb-8 text-lg leading-relaxed text-gray-200 italic">
-      La vostra presenza sarà per noi il regalo più grande. Ma se desiderate contribuire a realizzare i nostri
-      sogni, potete farlo con un pensiero per il nostro viaggio di nozze.
+    <h2 class="font-adore mb-8 text-5xl text-white">Lista Nozze</h2>
+    <p class="mb-8 text-lg leading-relaxed text-gray-200">
+      Condividere questo giorno con voi è ciò che desideriamo di più. <br />Ogni vostro pensiero contribuirà a
+      realizzare i nostri sogni.
     </p>
     <div class="inline-block rounded-md border border-white/30 bg-white/20 px-8 py-4 text-lg text-white">
       <p class="tracking-widest text-gray-200">IBAN</p>
@@ -194,8 +196,8 @@
           }
         </button>
       </div>
-      <p class="mt-2 text-sm text-gray-200">Intestato a: Camilla & Riccardo</p>
+      <p class="text-md mt-2 text-gray-200">Intestato a: Camilla & Riccardo</p>
     </div>
-    <p class="mt-12 text-3xl text-white italic">Grazie di cuore!</p>
+    <p class="mt-12 text-3xl text-white">Grazie di cuore!</p>
   </div>
 </section>

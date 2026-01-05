@@ -1,6 +1,8 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
+import { LogoComponent } from '../../logo/logo.component';
+
 interface NavLink {
   href: string;
   label: string;
@@ -22,15 +24,11 @@ interface NavLink {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, LogoComponent],
 })
 export class NavbarComponent {
   private document = inject(DOCUMENT);
 
-  // Impostato a vuoto come richiesto
-  logoUrl = '/images/logo.png';
-
-  // Sempre true per mantenere la navbar visibile
   isVisible = signal(true);
   isMobileMenuOpen = signal(false);
 
@@ -39,7 +37,7 @@ export class NavbarComponent {
     { href: '#rsvp', label: 'RSVP e Lista Nozze' },
     { href: '#where', label: 'Come Arrivare' },
     { href: '#schedule', label: 'Il Programma' },
-    { href: '#accomodation', label: 'Dove Soggiornare' },
+    //{ href: '#accomodation', label: 'Dove Soggiornare' },
   ];
 
   toggleMenu() {

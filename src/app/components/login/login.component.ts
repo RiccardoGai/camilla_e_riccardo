@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LogoComponent } from '../logo/logo.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, LogoComponent],
 })
 export class LoginComponent implements OnInit {
-  logoUrl = '/images/logo.png';
   router: Router = inject(Router);
   route: ActivatedRoute = inject(ActivatedRoute);
   authService: AuthService = inject(AuthService);
