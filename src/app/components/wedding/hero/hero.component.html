@@ -1,0 +1,50 @@
+<!-- HERO -->
+<header id="home" class="relative flex h-screen min-h-[600px] flex-col bg-cover bg-center">
+  <!-- 
+    Using NgOptimizedImage with 'priority' tells the browser to load this image ASAP.
+    The 'fill' attribute makes it cover the header, similar to a background image.
+  -->
+  <img
+    ngSrc="/images/hero.jpeg"
+    priority
+    fill
+    class="hero-image"
+    alt="Un paesaggio suggestivo per il matrimonio di Camilla e Riccardo"
+  />
+
+  <div class="absolute inset-0 bg-[#8d7a6e]/30"></div>
+
+  <!-- <div class="absolute top-6 left-6 z-10">
+    <img [src]="logoUrl" alt="Logo C&R" class="w-20 h-auto hero-logo">
+  </div> -->
+  <div class="z-10 m-auto animate-[fadeIn_2s_ease-in-out] text-center text-white">
+    <h1 class="flex flex-col items-center text-7xl leading-none md:text-[8rem]">
+      <span class="flex flex-wrap justify-center gap-5 uppercase">
+        <span>Camilla</span>
+        <span
+          class="font-cursive inline-block self-end align-baseline text-[10rem] leading-[0.3] lowercase md:text-[15rem]"
+          >e</span
+        >
+      </span>
+
+      <span class="uppercase">Riccardo</span>
+    </h1>
+  </div>
+
+  <div
+    class="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-[fadeIn_2s_ease-in-out_1s_forwards] opacity-0"
+  >
+    <a href="#details" aria-label="Scorri verso il basso">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1"
+        stroke="currentColor"
+        class="h-8 w-8 animate-bounce text-white/80"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+      </svg>
+    </a>
+  </div>
+</header>

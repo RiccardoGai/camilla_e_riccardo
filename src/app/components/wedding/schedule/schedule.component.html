@@ -1,0 +1,39 @@
+<!-- SCHEDULE -->
+<section id="schedule" appAnimateOnScroll class="section-to-animate py-24">
+  <div class="mx-auto max-w-xl px-6">
+    <div class="mb-16 text-center">
+      <h2 class="text-5xl text-white">Il Programma</h2>
+    </div>
+
+    <div class="flex w-full flex-col">
+      @for (item of schedule; track item.time; let last = $last) {
+        <div class="flex min-h-[100px] w-full">
+          <!-- Left Column: Title & Time -->
+          <!-- Using w-1/2 ensures the border is exactly at 50% width -->
+          <div
+            class="flex w-1/2 flex-col items-end justify-center border-r border-white/40 py-6 pr-4 text-right md:pr-8"
+          >
+            <h3
+              class="max-w-full text-xl leading-tight tracking-[0.2em] break-words text-white uppercase md:text-2xl"
+            >
+              {{ item.title }}
+            </h3>
+            <p class="md:text-md mt-1 text-lg text-white/80 italic">ore {{ item.time }}</p>
+          </div>
+
+          <!-- Right Column: Icon -->
+          <div class="flex w-1/2 items-center justify-start py-6 pl-4 md:pl-8">
+            <div class="text-white opacity-90">
+              <ng-icon [name]="item.icon" size="48px" class="!text-white"></ng-icon>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Decorative End Dot -->
+    <div class="-mt-[1px] flex justify-center">
+      <div class="h-2 w-2 rounded-full bg-white/40"></div>
+    </div>
+  </div>
+</section>

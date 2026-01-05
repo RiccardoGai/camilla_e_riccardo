@@ -1,0 +1,21 @@
+<!-- STAY -->
+<section id="accomodation" class="py-20 md:py-32">
+  <div class="mx-auto max-w-4xl px-6">
+    <div appAnimateOnScroll class="section-to-animate">
+      <!-- Changed text color to brown/grey for light background -->
+      <h2 class="text-beige mb-8 text-center text-5xl">Dove Soggiornare</h2>
+      <div class="space-y-6">
+        @for (hotel of hotels(); track hotel.name) {
+          <div class="border-green-light/30 border-b pb-4">
+            <h3 class="text-beige text-2xl">{{ hotel.name }}</h3>
+            <p class="mt-1 text-[#5d5d5d] italic">{{ hotel.description }}</p>
+            <div class="mt-2 flex items-center justify-between text-sm">
+              <span class="text-green-light">{{ hotel.distance }}</span>
+              <a [href]="hotel.link" target="_blank" class="text-beige hover:underline">Visita il sito</a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

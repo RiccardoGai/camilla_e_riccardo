@@ -1,0 +1,201 @@
+<!-- RSVP & GIFT -->
+<section id="rsvp" appAnimateOnScroll class="section-to-animate py-20 text-gray-100 md:py-32">
+  <!-- RSVP PART -->
+  <div class="mx-auto max-w-2xl px-6">
+    <h2 class="font-adore mb-8 text-center text-5xl text-white">RSVP</h2>
+    @if (submissionState() === 'idle') {
+      <form [formGroup]="rsvpForm" (ngSubmit)="onRsvpSubmit()" class="space-y-6 font-sans">
+        <div formArrayName="guests">
+          <label class="mb-2 block text-lg text-gray-200">Nome e cognome</label>
+          @for (guest of guests.controls; track $index) {
+            <div
+              [formGroupName]="$index"
+              class="mb-4 border-b border-white/10 pb-4 last:mb-2 last:border-b-0 last:pb-0"
+            >
+              <div class="flex items-center gap-2">
+                <input
+                  formControlName="name"
+                  type="text"
+                  placeholder="Mario Rossi"
+                  class="w-full flex-grow border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
+                />
+                <button
+                  type="button"
+                  (click)="removeGuest($index)"
+                  [class.invisible]="guests.length <= 1"
+                  class="p-1 text-gray-200 transition-colors hover:text-red-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-5 w-5"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-4 pt-3 pl-1">
+                <label class="group flex cursor-pointer items-center gap-3 text-sm text-gray-300 select-none">
+                  <!-- Custom Checkbox Wrapper -->
+                  <div class="relative flex h-5 w-5 items-center justify-center">
+                    <input
+                      type="checkbox"
+                      formControlName="isChild"
+                      (change)="toggleChildAge($index)"
+                      class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-white/40 bg-white/10 transition-all duration-200 checked:border-[#f1ebe5] checked:bg-[#f1ebe5] focus:outline-none"
+                    />
+                    <!-- Checkmark Icon (Hidden by default, shown when peer is checked) -->
+                    <svg
+                      class="pointer-events-none absolute h-3.5 w-3.5 text-[#5d5d5d] opacity-0 transition-opacity duration-200 peer-checked:opacity-100"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                  <span class="transition-colors group-hover:text-white">Bambino/a</span>
+                </label>
+
+                @if (guest.get('isChild')?.value) {
+                  <div class="flex animate-[fadeIn_0.3s_ease-out] items-center gap-2">
+                    <label for="age-{{ $index }}" class="text-sm text-gray-300">Età:</label>
+                    <input
+                      id="age-{{ $index }}"
+                      formControlName="age"
+                      type="number"
+                      min="0"
+                      max="17"
+                      class="w-16 border-b border-white/40 bg-transparent py-1 text-center transition-colors outline-none placeholder:text-gray-400 focus:border-white"
+                      placeholder="_ _"
+                    />
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          <button
+            type="button"
+            (click)="addGuest()"
+            class="mt-2 flex items-center gap-1 text-sm text-gray-200 transition-colors hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-5 w-5"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Aggiungi persona
+          </button>
+        </div>
+        <div>
+          <label for="notes" class="mb-2 block text-lg text-gray-200">Note per gli sposi</label>
+          <textarea
+            formControlName="notes"
+            id="notes"
+            rows="1"
+            placeholder="Es. intolleranze, allergie, necessità di seggiolone..."
+            class="w-full border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
+          ></textarea>
+        </div>
+        <div class="pt-6 text-center">
+          <button
+            type="submit"
+            [disabled]="rsvpForm.invalid"
+            class="rounded-md bg-[#f1ebe5] px-12 py-3 tracking-widest text-[#5d5d5d] uppercase transition-all duration-300 hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-[#f1ebe5]/50 disabled:text-[#5d5d5d]/70"
+          >
+            Invia Conferma
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="py-10 text-center transition-opacity duration-500">
+        @if (submissionState() === 'loading') {
+          <div class="flex flex-col items-center justify-center">
+            <svg
+              class="h-10 w-10 animate-spin text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <p class="mt-4 text-lg text-gray-200">Invio in corso...</p>
+          </div>
+        } @else if (submissionState() === 'success') {
+          <div class="flex flex-col items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-16 w-16 text-white"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <h3 class="mt-4 text-3xl text-white">Grazie!</h3>
+            <p class="mt-2 text-lg text-gray-200 italic">La tua conferma è stata inviata.</p>
+            <p class="mt-2 text-lg text-gray-200 italic">Non vediamo l'ora di festeggiare con te!</p>
+          </div>
+        } @else if (submissionState() === 'error') {
+          <p>Si è verificato un errore. Riprova.</p>
+        }
+      </div>
+    }
+  </div>
+  <!-- GIFT LIST PART -->
+  <div class="mx-auto mt-16 max-w-3xl px-6 text-center">
+    <h2 class="mb-8 text-5xl text-white">Lista Nozze</h2>
+    <p class="mb-8 text-lg leading-relaxed text-gray-200 italic">
+      La vostra presenza sarà per noi il regalo più grande. Ma se desiderate contribuire a realizzare i nostri
+      sogni, potete farlo con un pensiero per il nostro viaggio di nozze.
+    </p>
+    <div class="inline-block rounded-md border border-white/30 bg-white/20 px-8 py-4 text-lg text-white">
+      <p class="tracking-widest text-gray-200">IBAN</p>
+      <div class="mt-1 flex items-center gap-4">
+        <p class="select-all">{{ iban }}</p>
+        <button
+          (click)="copyIban()"
+          title="Copia IBAN"
+          class="p-1 text-white/80 transition-colors hover:text-white"
+        >
+          @if (copyState() === 'copied') {
+            <ng-icon name="hugeTick01" size="20px" class="!text-white"></ng-icon>
+          } @else {
+            <ng-icon name="hugeCopy01" size="20px" class="cursor-pointer !text-white"></ng-icon>
+          }
+        </button>
+      </div>
+      <p class="mt-2 text-sm text-gray-200">Intestato a: Camilla & Riccardo</p>
+    </div>
+    <p class="mt-12 text-3xl text-white italic">Grazie di cuore!</p>
+  </div>
+</section>

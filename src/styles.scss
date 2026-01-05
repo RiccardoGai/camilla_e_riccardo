@@ -1,0 +1,166 @@
+@use 'tailwindcss';
+
+@theme {
+  --color-beige: #8d7a6e;
+  --color-green: #828a6c;
+  --color-green-light: #969e7f;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Hairline.ttf") format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-HairlineItalic.ttf") format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Thin.ttf") format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-ThinItalic.ttf") format('truetype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Extralight.ttf") format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-ExtralightItalic.ttf") format('truetype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Light.ttf") format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-LightItalic.ttf") format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Regular.ttf") format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Italic.ttf") format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Medium.ttf") format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-MediumItalic.ttf") format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Semibold.ttf") format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-SemiboldItalic.ttf") format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-Bold.ttf") format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Editors Note';
+  src: url("/fonts/editors_note/Editor'sNote-BoldItalic.ttf") format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Grand Amoura';
+  src: url('/fonts/grand-amoura/Grand-Amoura.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Adore';
+  src: url('/fonts/adore/Adore.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: #f1ebe5; /* Beige */
+  color: #5d5d5d;
+  font-family: 'Editors Note', serif;
+}
+.font-adore {
+  font-family: 'Adore';
+}
+.font-cursive {
+  font-family: 'Grand Amoura', cursive;
+}
