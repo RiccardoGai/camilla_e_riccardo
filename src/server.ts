@@ -10,7 +10,7 @@ import { google } from 'googleapis';
 import crypto from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -156,31 +156,7 @@ app.post('/api/rsvp', async (req, res) => {
 
     await appendToSheet(normalizedGuests);
 
-    const resend = new Resend(process.env['RESEND_API_KEY']);
-    console.log(process.env['RESEND_API_KEY']);
-    try {
-      await resend.emails.send({
-        from: 'camillaericcardo@resend.dev',
-        to: ['riccardo.gai91@gmail.com'],
-        subject: 'RSVP Ricevuto',
-        html: `<h1>Nuovo RSVP Ricevuto</h1>
-      <p>Sono stati ricevuti ${normalizedGuests.length} nuovi RSVP:</p>
-      <ul>
-        ${normalizedGuests
-          .map(
-            (guest) => `<li>
-          <strong>Nome:</strong> ${guest.name} <br/>
-          <strong>Bambino:</strong> ${guest.isChild ? 'Sì' : 'No'} <br/>
-          <strong>Età:</strong> ${guest.age} <br/>
-          <strong>Note:</strong> ${guest.note}
-        </li>`
-          )
-          .join('')}
-      </ul>`,
-      });
-    } catch (emailError) {
-      console.error("Errore durante l'invio dell'email di notifica:", emailError);
-    }
+    await sendNotificationEmail(normalizedGuests);
 
     return res.status(200).json({ success: true, rowsAppended: normalizedGuests.length });
   } catch (error) {
@@ -188,6 +164,58 @@ app.post('/api/rsvp', async (req, res) => {
     return res.status(500).json({ success: false, message: 'Errore nel salvataggio RSVP.' });
   }
 });
+
+const sendNotificationEmail = async (guests: GuestPayload[]) => {
+  const gmailUser = process.env['GMAIL_USER'];
+  const gmailAppPassword = process.env['GMAIL_APP_PASSWORD'];
+  const notificationEmail = process.env['NOTIFICATION_EMAIL'];
+
+  if (!gmailUser || !gmailAppPassword || !notificationEmail) {
+    console.error(
+      'Impossibile inviare email: GMAIL_USER, GMAIL_APP_PASSWORD o NOTIFICATION_EMAIL non configurati.'
+    );
+    return;
+  }
+
+  const recipients = notificationEmail
+    .split(',')
+    .map((email) => email.trim())
+    .filter((email) => email.length > 0);
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword,
+    },
+  });
+
+  const html = `<h1>Nuovo RSVP Ricevuto</h1>
+    <p>Sono stati ricevuti ${guests.length} nuovi RSVP:</p>
+    <ul>
+      ${guests
+        .map(
+          (guest) => `<li>
+            <strong>Nome:</strong> ${guest.name} <br/>
+            <strong>Bambino:</strong> ${guest.isChild ? 'Sì' : 'No'} <br/>
+            <strong>Età:</strong> ${guest.age ?? ''} <br/>
+            <strong>Note:</strong> ${guest.note ?? ''}
+          </li>`
+        )
+        .join('')}
+    </ul>`;
+
+  try {
+    await transporter.sendMail({
+      from: gmailUser,
+      to: recipients,
+      subject: 'RSVP Ricevuto',
+      html,
+    });
+  } catch (error) {
+    console.error("Errore durante l'invio dell'email di notifica:", error);
+  }
+};
 /**
  * Serve static files from /browser
  */
