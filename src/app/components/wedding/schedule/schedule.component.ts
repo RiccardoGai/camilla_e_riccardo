@@ -17,18 +17,6 @@ const hugeWedding = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
       :host {
         display: block;
       }
-      .section-to-animate {
-        opacity: 0;
-        transform: translateY(20px);
-        transition:
-          opacity 0.8s ease-out,
-          transform 0.8s ease-out;
-      }
-
-      .section-to-animate.is-visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

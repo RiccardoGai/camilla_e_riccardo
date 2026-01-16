@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeCopy01, hugeTick01 } from '@ng-icons/huge-icons';
 import { firstValueFrom } from 'rxjs';
@@ -14,18 +14,6 @@ import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.
     `
       :host {
         display: block;
-      }
-      .section-to-animate {
-        opacity: 0;
-        transform: translateY(20px);
-        transition:
-          opacity 0.8s ease-out,
-          transform 0.8s ease-out;
-      }
-
-      .section-to-animate.is-visible {
-        opacity: 1;
-        transform: translateY(0);
       }
     `,
   ],
@@ -111,7 +99,7 @@ export class RsvpComponent {
   }
 
   // --- Gift List Logic ---
-  iban = 'IT 60 X 12345 67890 123456789012';
+  iban = 'IT98B0103071611000063474333';
   copyState = signal<'idle' | 'copied'>('idle');
 
   copyIban(): void {

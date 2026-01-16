@@ -1,30 +1,31 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.directive';
 
 @Component({
   selector: 'app-where',
   templateUrl: './where.component.html',
-  styles: [`
-    :host {
-      display: block;
-    }
-    .section-to-animate {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .section-to-animate.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, AnimateOnScrollDirective],
 })
 export class WhereComponent {
-  mapUrl = input.required<SafeResourceUrl>();
-  mapDirectionsUrl = input.required<string>();
+  private sanitizer: DomSanitizer = inject(DomSanitizer);
+
+  mapUrl: SafeResourceUrl;
+  mapDirectionsUrl =
+    'https://www.google.com/maps/dir/?api=1&destination=Colcaprile,+Strada+Comunale+Santa+Croce,+06081+Assisi+PG';
+
+  constructor() {
+    const url =
+      'https://maps.google.com/maps?q=Colcaprile%20Strada%20Comunale%20Santa%20Croce%2C%2006081%20Assisi&t=&z=15&ieUTF8&iwloc=&output=embed';
+    this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
 }

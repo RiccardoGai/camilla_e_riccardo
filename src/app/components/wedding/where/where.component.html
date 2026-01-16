@@ -11,7 +11,7 @@
 
       <div class="aspect-video w-full overflow-hidden rounded-md border-4 border-white shadow-lg">
         <iframe
-          [src]="mapUrl()"
+          [src]="mapUrl"
           width="100%"
           height="100%"
           style="border: 0"
@@ -20,7 +20,7 @@
         ></iframe>
       </div>
       <a
-        [href]="mapDirectionsUrl()"
+        [href]="mapDirectionsUrl"
         target="_blank"
         class="bg-green-light hover:bg-green-dark mt-8 inline-block rounded-md px-8 py-3 tracking-widest text-white uppercase transition-colors duration-300"
         >Apri Indicazioni</a

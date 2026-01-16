@@ -6,12 +6,30 @@ export const authGuard: CanActivateFn = async (route: ActivatedRouteSnapshot): P
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  const hasPasswordParam = route.queryParamMap.has('password');
+
+  const createCleanUrlTree = (): UrlTree => {
+    const currentPath = route.pathFromRoot
+      .map((r) => r.url.map((segment) => segment.path).join('/'))
+      .filter((path) => path)
+      .join('/');
+    const queryParams = { ...route.queryParams };
+    delete queryParams['password'];
+    return router.createUrlTree([`/${currentPath}`], { queryParams });
+  };
+
   if (authService.isAuthenticated()) {
+    if (hasPasswordParam) {
+      return createCleanUrlTree();
+    }
     return true;
   }
 
   const sessionValid = await authService.checkSession();
   if (sessionValid) {
+    if (hasPasswordParam) {
+      return createCleanUrlTree();
+    }
     return true;
   }
 
