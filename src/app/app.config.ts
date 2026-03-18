@@ -1,8 +1,14 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  ApplicationConfig,
+  isDevMode,
+  provideAppInitializer,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { inject } from '@vercel/analytics';
 import { APP_ROUTES } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -11,5 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(APP_ROUTES),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
+    provideAppInitializer(() => {
+      inject({ mode: isDevMode() ? 'development' : 'production' });
+    }),
   ],
 };
