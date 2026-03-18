@@ -1,11 +1,36 @@
 
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormField, applyEach, form, hidden, max, min, required, schema, submit } from '@angular/forms/signals';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeCopy01, hugeTick01 } from '@ng-icons/huge-icons';
 import { firstValueFrom } from 'rxjs';
 import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.directive';
+
+interface Guest {
+  name: string;
+  isChild: boolean;
+  age: number | null;
+  note: string;
+}
+
+interface RsvpModel {
+  guests: Guest[];
+}
+
+function createGuest(): Guest {
+  return { name: '', isChild: false, age: null, note: '' };
+}
+
+const rsvpSchema = schema<RsvpModel>((p) => {
+  applyEach(p.guests, (item) => {
+    required(item.name);
+    required(item.age);
+    min(item.age, 0);
+    max(item.age, 17);
+    hidden(item.age, ({ valueOf }) => !valueOf(item.isChild));
+  });
+});
 
 @Component({
   selector: 'app-rsvp',
@@ -18,84 +43,54 @@ import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AnimateOnScrollDirective, NgIcon],
+  imports: [FormField, AnimateOnScrollDirective, NgIcon],
   providers: [provideIcons({ hugeTick01, hugeCopy01 })],
 })
 export class RsvpComponent {
-  private fb = inject(FormBuilder);
   private http = inject(HttpClient);
 
-  rsvpForm = this.fb.group({
-    guests: this.fb.array([this.createGuestGroup()], Validators.required),
-  });
+  readonly model = signal<RsvpModel>({ guests: [createGuest()] });
+  readonly f = form(this.model, rsvpSchema);
 
   submissionState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  get guests(): FormArray {
-    return this.rsvpForm.get('guests') as FormArray;
-  }
-
-  createGuestGroup() {
-    return this.fb.group({
-      name: ['', Validators.required],
-      isChild: [false],
-      age: [''],
-      note: [''],
-    });
-  }
-
   addGuest() {
-    this.guests.push(this.createGuestGroup());
+    this.model.update((v) => ({ ...v, guests: [...v.guests, createGuest()] }));
   }
 
   removeGuest(index: number) {
-    if (this.guests.length > 1) {
-      this.guests.removeAt(index);
+    if (this.model().guests.length > 1) {
+      this.model.update((v) => ({
+        ...v,
+        guests: v.guests.filter((_, i) => i !== index),
+      }));
     }
   }
 
-  toggleChildAge(index: number) {
-    const group = this.guests.at(index) as FormGroup;
-    const isChildControl = group.get('isChild');
-    const ageControl = group.get('age');
-
-    if (isChildControl?.value) {
-      ageControl?.setValidators([Validators.required]);
-    } else {
-      ageControl?.clearValidators();
-      ageControl?.setValue('');
-    }
-    ageControl?.updateValueAndValidity();
-  }
-
-  async onRsvpSubmit() {
-    if (this.rsvpForm.invalid) {
-      this.rsvpForm.markAllAsTouched();
-      return;
-    }
-
-    this.submissionState.set('loading');
-
-    const payload = {
-      guests: this.guests.getRawValue().map((guest) => ({
-        name: guest.name ?? '',
-        isChild: guest.isChild ?? false,
-        age: guest.age ?? '',
-        note: guest.note ?? '',
-      })),
-    };
-
-    try {
-      await firstValueFrom(this.http.post('/api/rsvp', payload));
-      this.submissionState.set('success');
-      this.rsvpForm.reset();
-      this.guests.clear();
-      this.addGuest(); // Add one back for the next submission
-    } catch (error) {
-      console.error('RSVP submission failed', error);
-      this.submissionState.set('error');
-      setTimeout(() => this.submissionState.set('idle'), 4000);
-    }
+  async onRsvpSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    await submit(this.f, async () => {
+      this.submissionState.set('loading');
+      try {
+        await firstValueFrom(
+          this.http.post('/api/rsvp', {
+            guests: this.model().guests.map((g) => ({
+              name: g.name,
+              isChild: g.isChild,
+              age: g.age,
+              note: g.note,
+            })),
+          }),
+        );
+        this.submissionState.set('success');
+        this.model.set({ guests: [createGuest()] });
+      } catch (error) {
+        console.error('RSVP submission failed', error);
+        this.submissionState.set('error');
+        setTimeout(() => this.submissionState.set('idle'), 4000);
+      }
+      return null;
+    });
   }
 
   // --- Gift List Logic ---

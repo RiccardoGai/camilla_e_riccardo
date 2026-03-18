@@ -4,17 +4,14 @@
   <div class="mx-auto max-w-2xl px-6">
     <h2 class="font-adore mb-8 text-center text-5xl text-white">RSVP</h2>
     @if (submissionState() === 'idle') {
-      <form [formGroup]="rsvpForm" (ngSubmit)="onRsvpSubmit()" class="space-y-6">
-        <div formArrayName="guests">
+      <form novalidate (submit)="onRsvpSubmit($event)" class="space-y-6">
+        <div>
           <label class="mb-2 block text-lg text-gray-200">Nome e cognome</label>
-          @for (guest of guests.controls; track $index) {
-            <div
-              [formGroupName]="$index"
-              class="mb-4 border-b border-white/10 pb-4 last:mb-2 last:border-b-0 last:pb-0"
-            >
+          @for (guestField of f.guests; track $index) {
+            <div class="mb-4 border-b border-white/10 pb-4 last:mb-2 last:border-b-0 last:pb-0">
               <div class="flex items-center gap-2">
                 <input
-                  formControlName="name"
+                  [formField]="guestField.name"
                   type="text"
                   placeholder="Mario Rossi"
                   class="w-full flex-grow border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
@@ -22,7 +19,7 @@
                 <button
                   type="button"
                   (click)="removeGuest($index)"
-                  [class.invisible]="guests.length <= 1"
+                  [class.invisible]="f.guests.length <= 1"
                   class="p-1 text-gray-200 transition-colors hover:text-red-400"
                 >
                   <svg
@@ -43,8 +40,7 @@
                   <div class="relative flex h-5 w-5 items-center justify-center">
                     <input
                       type="checkbox"
-                      formControlName="isChild"
-                      (change)="toggleChildAge($index)"
+                      [formField]="guestField.isChild"
                       class="peer checked:border-beige-light checked:bg-beige-light h-5 w-5 cursor-pointer appearance-none rounded border border-white/40 bg-white/10 transition-all duration-200 focus:outline-none"
                     />
                     <!-- Checkmark Icon (Hidden by default, shown when peer is checked) -->
@@ -64,15 +60,13 @@
                   <span class="transition-colors group-hover:text-white">Bambino/a</span>
                 </label>
 
-                @if (guest.get('isChild')?.value) {
+                @if (!guestField.age().hidden()) {
                   <div class="flex animate-[fadeIn_0.3s_ease-out] items-center gap-2">
                     <label for="age-{{ $index }}" class="text-sm text-gray-300">Età:</label>
                     <input
                       id="age-{{ $index }}"
-                      formControlName="age"
+                      [formField]="guestField.age"
                       type="number"
-                      min="0"
-                      max="17"
                       class="w-16 border-b border-white/40 bg-transparent py-1 text-center transition-colors outline-none placeholder:text-gray-400 focus:border-white"
                       placeholder="_ _"
                     />
@@ -85,7 +79,7 @@
                 >
                 <textarea
                   id="note-{{ $index }}"
-                  formControlName="note"
+                  [formField]="guestField.note"
                   rows="1"
                   placeholder="Es. intolleranze, allergie, necessità di seggiolone..."
                   class="w-full border-b border-white/40 bg-transparent py-2 transition-colors outline-none placeholder:text-gray-300 placeholder:italic focus:border-white"
@@ -114,7 +108,7 @@
         <div class="pt-6 text-center">
           <button
             type="submit"
-            [disabled]="rsvpForm.invalid"
+            [disabled]="f().invalid()"
             class="bg-beige-light disabled:bg-beige-light/50 text-gray disabled:text-gray/70 rounded-md px-12 py-3 tracking-widest uppercase transition-all duration-300 hover:bg-white/90 disabled:cursor-not-allowed"
           >
             Invia Conferma

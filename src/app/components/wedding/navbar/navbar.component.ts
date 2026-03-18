@@ -1,5 +1,4 @@
-
-import { ChangeDetectionStrategy, Component, inject, signal, DOCUMENT } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DOCUMENT, inject, signal } from '@angular/core';
 
 import { LogoComponent } from '../../logo/logo.component';
 
@@ -37,7 +36,7 @@ export class NavbarComponent {
     { href: '#rsvp', label: 'RSVP e Lista Nozze' },
     { href: '#where', label: 'Come Arrivare' },
     { href: '#schedule', label: 'Il Programma' },
-    //{ href: '#accomodation', label: 'Dove Soggiornare' },
+    { href: '#accomodation', label: 'Dove Soggiornare' },
   ];
 
   toggleMenu() {
