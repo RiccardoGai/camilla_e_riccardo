@@ -15,7 +15,6 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["ES2022", "dom"],
     "module": "ES2022",
     "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
