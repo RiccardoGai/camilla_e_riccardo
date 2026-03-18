@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, AnimateOnScrollDirective, NgIcon],
+  imports: [ReactiveFormsModule, AnimateOnScrollDirective, NgIcon],
   providers: [provideIcons({ hugeTick01, hugeCopy01 })],
 })
 export class RsvpComponent {

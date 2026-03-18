@@ -1,5 +1,5 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+
+import { ChangeDetectionStrategy, Component, inject, signal, DOCUMENT } from '@angular/core';
 
 import { LogoComponent } from '../../logo/logo.component';
 
@@ -24,7 +24,7 @@ interface NavLink {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, LogoComponent],
+  imports: [LogoComponent],
 })
 export class NavbarComponent {
   private document = inject(DOCUMENT);

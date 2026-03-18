@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { AccomodationComponent } from './accomodation/accomodation.component';
@@ -22,7 +22,6 @@ import { WhereComponent } from './where/where.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     NavbarComponent,
     HeroComponent,
     DetailsComponent,
@@ -30,8 +29,7 @@ import { WhereComponent } from './where/where.component';
     AccomodationComponent,
     ScheduleComponent,
     RsvpComponent,
-    WeddingFooterComponent,
-    // WaveDividerComponent,
-  ],
+    WeddingFooterComponent
+],
 })
 export class WeddingComponent {}

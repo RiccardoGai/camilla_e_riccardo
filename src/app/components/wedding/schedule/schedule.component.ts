@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconType, NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeCheeseCake01, hugeDish02, hugeDrink, hugeMusicNote02 } from '@ng-icons/huge-icons';
@@ -20,7 +20,7 @@ const hugeWedding = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, AnimateOnScrollDirective, NgIcon],
+  imports: [AnimateOnScrollDirective, NgIcon],
   providers: [provideIcons({ hugeWedding, hugeDrink, hugeDish02, hugeCheeseCake01, hugeMusicNote02 })],
 })
 export class ScheduleComponent {

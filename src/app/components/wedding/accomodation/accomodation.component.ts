@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeGuestHouse, hugeHome01, hugeHotel01 } from '@ng-icons/huge-icons';
@@ -21,7 +21,7 @@ interface Hotel {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, AnimateOnScrollDirective, NgIcon],
+  imports: [AnimateOnScrollDirective, NgIcon],
   providers: [provideIcons({ hugeHotel01, hugeGuestHouse, hugeHome01 })],
 })
 export class AccomodationComponent {

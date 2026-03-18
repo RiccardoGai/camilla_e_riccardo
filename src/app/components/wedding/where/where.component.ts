@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.directive';
@@ -14,7 +14,7 @@ import { AnimateOnScrollDirective } from '../../../directives/animate-on-scroll.
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, AnimateOnScrollDirective],
+  imports: [AnimateOnScrollDirective],
 })
 export class WhereComponent {
   private sanitizer: DomSanitizer = inject(DomSanitizer);
