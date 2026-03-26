@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { hugeGuestHouse, hugeHome01, hugeHotel01 } from '@ng-icons/huge-icons';
@@ -8,6 +7,7 @@ interface Hotel {
   name: string;
   link: string;
   icon: string;
+  contact?: { name: string; phone: string };
 }
 
 @Component({
@@ -30,16 +30,7 @@ export class AccomodationComponent {
       name: 'Re Artù',
       link: 'https://reartuassisi.it/',
       icon: 'hugeHotel01',
-    },
-    {
-      name: 'Casale Merlino',
-      link: 'https://reartuassisi.it/ospitalita/merlino-il-casale',
-      icon: 'hugeGuestHouse',
-    },
-    {
-      name: 'Antica Fonte',
-      link: 'https://www.anticafonteassisi.com/',
-      icon: 'hugeHome01',
+      contact: { name: 'Silvia', phone: '+39 339 354 8815' },
     },
   ];
 }
